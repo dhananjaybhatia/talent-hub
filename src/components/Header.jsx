@@ -1,13 +1,21 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-} from "@clerk/clerk-react";
+import React, { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { SignedIn, SignedOut, SignIn, UserButton } from "@clerk/clerk-react";
+import { Button } from "./ui/button";
+import { BriefcaseBusiness, Heart, PenBox } from "lucide-react";
 
 const Header = () => {
+  const [userSignIn, setUserSignIn] = useState(false);
+  const [search, setSearch] = useSearchParams();
+
+  useEffect(() => {
+    if (search.get("sign-in")) setUserSignIn(true);
+  }, [search]);
+
+  const handleOverlayclick = (e) => {
+    if (e.target === e.currentTarget) setUserSignIn(false);
+  };
+
   return (
     <>
       <nav className="p-4 flex justify-between items-center">
@@ -19,15 +27,59 @@ const Header = () => {
           />
         </Link>
 
-        <div>
+        <div className="flex gap-8">
           <SignedOut>
-            <SignInButton />
+            <Button variant={"outline"} onClick={() => setUserSignIn(true)}>
+              Login
+            </Button>
           </SignedOut>
+
           <SignedIn>
-            <UserButton />
+            {/* // add a condition that this button is only shown to the rectruiter */}
+
+            <Link to="/post-job">
+              <Button
+                className={"bg-[#ef476f] hover:bg-[#d93a5d] text-amber-50"}
+              >
+                <PenBox className="mr-0" />
+                Post Job
+              </Button>
+            </Link>
+            <UserButton
+              appearance={{
+                elements: {
+                  avatarBox: "w-10 h-10",
+                },
+              }}
+            >
+              <UserButton.MenuItems>
+                <UserButton.Link
+                  label="My Jobs"
+                  labelIcon={<BriefcaseBusiness size={15} />}
+                  href="/jobs"
+                />
+                <UserButton.Link
+                  label="Saved Jobs"
+                  labelIcon={<Heart size={15} />}
+                  href="/saved-job"
+                />
+              </UserButton.MenuItems>
+            </UserButton>
           </SignedIn>
         </div>
       </nav>
+
+      {userSignIn && (
+        <div
+          className="fixed inset-0 flex items-center justify-center z-2 bg-white/10 backdrop-blur-md"
+          onClick={handleOverlayclick}
+        >
+          <SignIn
+            signUpForceRedirectUrl="/onboarding"
+            signUpFallbackRedirectUrl="/onboarding"
+          />
+        </div>
+      )}
     </>
   );
 };

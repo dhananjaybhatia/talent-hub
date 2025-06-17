@@ -118,6 +118,21 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+@layer utilities {
+  .gradient-title {
+    @apply bg-gradient-to-r from-[#FF6A3D] to-[#FFD38D] bg-clip-text text-transparent;
+  }
+  .subheading {
+    @apply text-orange-100 sm:mt-4 text-xs sm:text-xl;
+  }
+  .card-title {
+    @apply bg-gradient-to-r from-[#FF6A3D] to-[#FFD38D] bg-clip-text text-transparent text-3xl uppercase text-center sm:text-5xl;
+  }
+  .card-description {
+    @apply text-sm sm:text-base text-orange-100 leading-relaxed text-center mt-2 px-4;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
