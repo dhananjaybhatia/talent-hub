@@ -1,0 +1,38 @@
+html.light,
+body.light {
+  background-color: #e4cfe7;
+  color: #551cb1;
+}
+
+.grid-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: linear-gradient(
+      to right,
+      rgba(85, 28, 177, 0.05) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(85, 28, 177, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.grid-background::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(
+    circle,
+    rgba(85, 28, 177, 0.15) 0%,
+    rgba(85, 28, 177, 0.05) 40%,
+    transparent 80%
+  );
+}
