@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { SignedIn, SignedOut, SignIn, UserButton } from "@clerk/clerk-react";
+import {
+  SignedIn,
+  SignedOut,
+  SignIn,
+  UserButton,
+  useUser,
+} from "@clerk/clerk-react";
 import { Button } from "./ui/button";
 import { BriefcaseBusiness, Heart, PenBox } from "lucide-react";
 
 const Header = () => {
+  const { user } = useUser();
   const [userSignIn, setUserSignIn] = useState(false);
   const [search, setSearch] = useSearchParams();
 
@@ -13,7 +20,10 @@ const Header = () => {
   }, [search]);
 
   const handleOverlayclick = (e) => {
-    if (e.target === e.currentTarget) setUserSignIn(false);
+    if (e.target === e.currentTarget) {
+      setUserSignIn(false);
+    }
+    setSearch({});
   };
 
   return (
@@ -36,22 +46,20 @@ const Header = () => {
 
           <SignedIn>
             {/* // add a condition that this button is only shown to the rectruiter */}
+            {user?.unsafeMetadata?.role === "recruiter" && (
+              <Link to="/post-job">
+                <Button
+                  className={
+                    "bg-[#ef476f] hover:bg-[#d93a5d] text-amber-50 rounded-full"
+                  }
+                >
+                  <PenBox className="mr-0" />
+                  Post Job
+                </Button>
+              </Link>
+            )}
 
-            <Link to="/post-job">
-              <Button
-                className={"bg-[#ef476f] hover:bg-[#d93a5d] text-amber-50"}
-              >
-                <PenBox className="mr-0" />
-                Post Job
-              </Button>
-            </Link>
-            <UserButton
-              appearance={{
-                elements: {
-                  avatarBox: "w-10 h-10",
-                },
-              }}
-            >
+            <UserButton>
               <UserButton.MenuItems>
                 <UserButton.Link
                   label="My Jobs"
@@ -76,7 +84,7 @@ const Header = () => {
         >
           <SignIn
             signUpForceRedirectUrl="/onboarding"
-            signUpFallbackRedirectUrl="/onboarding"
+            fallbackRedirectUrl="/onboarding"
           />
         </div>
       )}
