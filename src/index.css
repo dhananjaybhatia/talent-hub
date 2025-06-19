@@ -149,3 +149,14 @@
     margin-right: auto;
   }
 }
+
+.wmde-markdown ul,
+.wmde-markdown ul li {
+  list-style-type: disc;
+  padding-left: 25px;
+  color: #e4cfe7;
+}
+
+.wmde-markdown {
+  background-color: transparent !important;
+}

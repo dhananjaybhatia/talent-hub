@@ -43,7 +43,7 @@ const JobListing = () => {
     if (isLoaded) fnCompanies();
   }, [isLoaded]);
 
-  if (!isLoaded) {
+  if (!isLoaded || loadingJobs) {
     return <BarLoader color="#ff7b00" width={"100%"} />;
   }
 
