@@ -160,3 +160,17 @@
 .wmde-markdown {
   background-color: transparent !important;
 }
+
+.w-md-editor {
+  background-color: transparent !important;
+}
+
+.w-md-editor-input,
+.w-md-editor-text {
+  background-color: transparent !important;
+  color: #e4cfe7 !important; /* your custom text color */
+}
+
+.w-md-editor-toolbar {
+  background-color: transparent !important;
+}

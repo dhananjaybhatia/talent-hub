@@ -1,7 +1,6 @@
 import { getSingleJob, getUpdateHiringStatus } from "@/api/apiCompanies";
 import ApplicationCard from "@/components/ApplicationCard";
 import ApplyJob from "@/components/ApplyJob";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,

@@ -37,7 +37,11 @@ const JobListing = () => {
     if (isLoaded) fnJobs();
   }, [isLoaded, location, company_id, searchQuery]);
 
-  const { fn: fnCompanies, data: companies } = useFetch(getCompanies);
+  const {
+    fn: fnCompanies,
+    data: companies,
+    loading: loadingCompanies,
+  } = useFetch(getCompanies);
 
   useEffect(() => {
     if (isLoaded) fnCompanies();
@@ -84,50 +88,58 @@ const JobListing = () => {
           Search
         </Button>
       </form>
-      <div className="flex flex-col sm:flex-row gap-2.5 w-full">
-        <Select value={location} onValueChange={(value) => setLocation(value)}>
-          <SelectTrigger>
-            <SelectValue placeholder="Filter by Location" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {State.getStatesOfCountry("AU").map(({ name }) => {
-                return (
+      {loadingCompanies ? (
+        <div className="my-4">
+          <BarLoader color="#ff7b00" width="100%" />
+        </div>
+      ) : (
+        <div className="flex flex-col sm:flex-row gap-2.5 w-full">
+          <Select
+            value={location}
+            onValueChange={(value) => setLocation(value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Filter by Location" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {State.getStatesOfCountry("AU").map(({ name }) => (
                   <SelectItem key={name} value={name}>
                     {name}
                   </SelectItem>
-                );
-              })}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <Select
-          value={company_id}
-          onValueChange={(value) => setCompany_id(value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Filter by Company" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {companies?.map(({ name, id }) => {
-                return (
-                  <SelectItem key={name} value={id}>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={company_id}
+            onValueChange={(value) => setCompany_id(value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Filter by Company" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {companies?.map(({ name, id }) => (
+                  <SelectItem key={id} value={id}>
                     {name}
                   </SelectItem>
-                );
-              })}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <Button
-          variant={"destructive"}
-          className="w-[165px] sm:w-auto"
-          onClick={handleClearFilter}
-        >
-          Clear Filter
-        </Button>
-      </div>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
+          <Button
+            variant={"destructive"}
+            className="w-[165px] sm:w-auto"
+            onClick={handleClearFilter}
+          >
+            Clear Filter
+          </Button>
+        </div>
+      )}
+
       {loadingJobs && (
         <div className="mt-4">
           <BarLoader color="#ff7b00" width={"100%"} />

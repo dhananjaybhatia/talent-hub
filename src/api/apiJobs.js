@@ -52,3 +52,15 @@ export async function saveJob(token, { alreadySaved }, saveData) {
     return data;
   }
 }
+
+export async function addNewJob(token, _, jobData) {
+  const supabase = await supabaseClient(token);
+
+  const {} = await supabase.from("jobs").insert([jobData]).select();
+
+  if (error) {
+    console.error("Error Creating Job: ", error);
+    return null;
+  }
+  return data;
+}
