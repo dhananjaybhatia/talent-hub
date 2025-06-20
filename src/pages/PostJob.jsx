@@ -1,5 +1,6 @@
 import { getCompanies } from "@/api/apiCompanies";
 import { addNewJob } from "@/api/apiJobs";
+import AddCompany from "@/components/AddCompany";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -155,7 +156,9 @@ const PostJob = () => {
               </Select>
             )}
           />
+          <AddCompany fetchCompanies={fnCompanies} />
         </div>
+
         {errors.location && (
           <p className="text-orange-500">{errors.location.message}</p>
         )}
