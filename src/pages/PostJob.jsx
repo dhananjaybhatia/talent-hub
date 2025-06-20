@@ -1,4 +1,5 @@
 import { getCompanies } from "@/api/apiCompanies";
+import { addNewJob } from "@/api/apiJobs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -17,7 +18,7 @@ import MDEditor from "@uiw/react-md-editor";
 import { State } from "country-state-city";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { BarLoader } from "react-spinners";
 import { z } from "zod";
 
@@ -25,10 +26,13 @@ const schema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   description: z.string().min(1, { message: "Description is required" }),
   company_id: z.string().min(1, { message: "Select or Add a new company" }),
+  location: z.string().min(1, { message: "Location is required" }),
   requirements: z.string().min(1, { message: "Requirements are required" }),
 });
 
 const PostJob = () => {
+  const navigate = useNavigate();
+
   const { user, isLoaded } = useUser();
   const {
     register,
@@ -54,6 +58,26 @@ const PostJob = () => {
     if (isLoaded) fnCompanies();
   }, [isLoaded]);
 
+  const {
+    loading: loadingCreateJob,
+    error: errorCreateJob,
+    fn: fnCreateJob,
+    data: createJobData,
+  } = useFetch(addNewJob);
+
+  const onSubmit = async (data) => {
+    try {
+      await fnCreateJob({
+        ...data,
+        recruiter_id: user.id,
+        isOpen: true,
+      });
+      navigate("/jobs"); // Navigate ONLY on success
+    } catch (error) {
+      console.error("Job creation failed:", error);
+    }
+  };
+
   if (!isLoaded || loadingCompanies) {
     return <BarLoader color="#ff7b00" width={"100%"} />;
   }
@@ -68,7 +92,10 @@ const PostJob = () => {
         Post A Job
       </h1>
 
-      <form className="flex flex-col gap-4 p-4 pb-0">
+      <form
+        className="flex flex-col gap-4 p-4 pb-0"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <Input placeholder={"Job Title"} {...register("title")} />
         {errors.title && (
           <p className="text-orange-500">{errors.title.message}</p>
@@ -79,7 +106,7 @@ const PostJob = () => {
         )}
         <div className="flex gap-4 items-center">
           <Controller
-            name="company_id"
+            name="location"
             control={control}
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
@@ -102,7 +129,7 @@ const PostJob = () => {
           />
 
           <Controller
-            name="company"
+            name="company_id"
             control={control}
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
@@ -149,6 +176,10 @@ const PostJob = () => {
         {errors.requirements && (
           <p className="text-orange-500">{errors.requirements.message}</p>
         )}
+        {errorCreateJob && (
+          <p className="text-orange-500">{errorCreateJob?.message}</p>
+        )}
+        {loadingCreateJob && <BarLoader color="#ff7b00" width={"100%"} />}
         <Button
           size="lg"
           className="bg-[#118ab2] hover:bg-[#0d6c8f] text-amber-50"
